@@ -1,0 +1,37 @@
+document.getElementById('getWeatherBtn').addEventListener('click', function() {
+    const city = document.getElementById('cityInput').value;
+    if (city) {
+        getWeather(city);
+    } else {
+        alert('Please enter a city name.');
+    }
+});
+
+function getWeather(city) {
+    const apiKey = '1af6f3062fbb4f93844120506240907';
+    const url = `http://api.weatherapi.com/v1/current.json?key=${apiKey}&q=${city}&aqi=no`;
+
+    fetch(url)
+        .then(response => response.json())
+        .then(data => {
+            console.log(data);
+            if (data.location) {
+                displayWeather(data);
+            } else {
+                alert('City not found!');
+            }
+        })
+        .catch(error => console.log('Error:', error));
+}
+
+function displayWeather(data) {
+    const weatherResult = document.getElementById('weatherResult');
+    const weatherHTML = `
+        <h2>${data.location.name}, ${data.location.country}</h2>
+        <p>${data.current.condition.text}</p>
+        <p>Temperature: ${data.current.temp_c}°C</p>
+        <p>Humidity: ${data.current.humidity}%</p>
+        <p>Wind Speed: ${data.current.wind_kph} kph</p>
+    `;
+    weatherResult.innerHTML = weatherHTML;
+}
